@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>간단한 지도 표시하기</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=[YourClientID]&callback=initMap"></script>
+</head>
+<body>
+    <div id="navbar">
+        <span id="user-info"></span>
+        <button id="logout-btn">Logout</button>
+    </div>
+    <div id="map" style="width:100%;height:600px;"></div>
+
+    <script>
+        var mapOptions = {
+            center: new naver.maps.LatLng(37.3595704, 127.105399),
+            zoom: 10
+        };
+
+        var map = new naver.maps.Map('map', mapOptions);
+
+        // 로그아웃 버튼 클릭 이벤트 처리
+        var logoutBtn = document.getElementById('logout-btn');
+        logoutBtn.addEventListener('click', logout);
+
+        // 사용자 정보 가져오기
+        var userInfo = document.getElementById('user-info');
+        getUserInfo();
+
+        // 사용자 정보 가져오기 함수
+        function getUserInfo() {
+            var user = window.user; // Amplify 웹 앱에서 전달된 사용자 정보
+            var urlParams = new URLSearchParams(window.location.search);
+            var email = urlParams.get('email');
+
+            if (email) {
+                userInfo.textContent = '환영합니다, ' + decodeURIComponent(email) + '님';
+                logoutBtn.style.display = 'inline-block';
+            } else {
+                userInfo.textContent = '비회원으로 사용중입니다';
+                logoutBtn.style.display = 'none';
+            }
+        }
+
+        // 로그아웃 함수
+        function logout() {
+            location.href = '[Amplify 주소]'; // Amplify 도메인 주소
+        }
+
+        // 비회원일 때의 처리
+        var user = window.user; // Amplify 웹 앱에서 전달된 사용자 정보
+        var urlParams = new URLSearchParams(window.location.search);
+        var email = urlParams.get('email');
+
+        if (!user && !email) {
+            var amplifyLink = document.createElement('a');
+            amplifyLink.href = '[Amplify 주소]'; // Amplify 도메인 주소
+            amplifyLink.textContent = 'Amplify 웹앱으로 이동하여 회원가입 및 로그인하기';
+            document.body.appendChild(amplifyLink);
+        }
+    </script>
+</body>
+</html>
